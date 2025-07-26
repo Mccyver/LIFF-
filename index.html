@@ -1,14 +1,67 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-  <meta charset="UTF-8"> 
-  <title>แบบฟอร์มสมัครงาน</title> 
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script> 
-  <style> body { font-family: sans-serif; padding: 20px; background: #f5f5f5; } h2 { text-align: center; color: #1c8adb; } form { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); } label { display: block; margin-top: 15px; font-weight: bold; } input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; } button { background: #1c8adb; color: white; border: none; padding: 12px; margin-top: 20px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; } #userInfo { margin-bottom: 10px; font-size: 14px; color: #444; } </style> 
-</head> 
-<body> 
-  <h2>สมัครงาน</h2> 
-  <div id="userInfo">กำลังโหลดข้อมูลผู้ใช้...</div> 
-  <form id="applyForm"> 
-    <label>ชื่อ - สกุล</label> 
-    <input type="text" name="fullname" required />
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>สมัครงานผ่าน LINE</title>
+</head>
+<body>
+  <h2 id="userInfo">กรุณารอสักครู่...</h2>
+  <form id="applyForm">
+    <label>ชื่อ-นามสกุล</label>
+    <input type="text" name="name" required /><br>
+
+    <label>เบอร์โทรศัพท์</label>
+    <input type="tel" name="phone" required /><br>
+
+    <label>อีเมล</label>
+    <input type="email" name="email" required /><br>
+
+    <label>ตำแหน่งที่ต้องการสมัคร</label>
+    <input type="text" name="position" required /><br>
+
+    <input type="hidden" name="userId" id="userId" />
+
+    <button type="submit">ส่งใบสมัคร</button>
+  </form>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwRDc4D4Re3SMCgfXbzcShyLkVDZ6DCexq-v_ywjOpPFM-IssPEEgW6tu5C2PE_CDgslg/exec';
+    const liffId = '2007192266-5p9GldYa';
+
+    async function main() {
+      await liff.init({ liffId });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      const profile = await liff.getProfile();
+      document.getElementById("userId").value = profile.userId;
+      document.getElementById("userInfo").innerText = `ยินดีต้อนรับคุณ ${profile.displayName}`;
+    }
+
+    main();
+
+    document.getElementById('applyForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: data
+      })
+      .then(() => {
+        alert('✅ ส่งใบสมัครเรียบร้อยแล้ว');
+        liff.closeWindow();
+      })
+      .catch(err => {
+        alert('❌ เกิดข้อผิดพลาด: ' + err);
+      });
+    });
+  </script>
+</body>
+</html>
+w(); }); }); } main(); </script> </body> </html>
